@@ -4,23 +4,33 @@ This module contains Classes
  - runcmd (run an OS command) -- Status not started
 '''
 
-# Will be used by logme
+# ToDo
+'''
+ - Define a module which has only variables. Those should be imported here. -- Completed
+ - The logdir check should be outside the class as every invocation of the class
+   will run the logdir check.  <<->> Not required. It is called once when class object is initialzed
+ - Change logging such that log.debug will display to STDOUT as well. Default will be log.info
+ - Port runcmd 
+'''
+
+'''
+Will be used by logme
+'''
 import sys
 import os
 import logging
 
-# Will be used by runcmd
+'''
+Will be used by runcmd
+'''
 import subprocess
 import shlex
 
 '''
-Variables used everywhere
+Import variables from vars
 '''
+from vars import dbname,dbuser,dbpass,dbport
 
-dbname = 'lifecycle'
-dbuser = 'lifecycle'
-dbpass = 'waterloo'
-dbport = 3306
 
 '''
 Class logme
@@ -49,14 +59,15 @@ class logme:
     logdir = '/u/logs'
     global logfile
     logfile = logdir + '/lank.log'
+    #print logfile
     if not (os.path.exists(logdir)):
         os.mkdir(logdir)
         os.chmod(logdir,0o777)
         os.open(logfile,'w',0o777)
         os.close(logfile)
 
-    def __init__(self,):
-    #    print(logfile)
+    def __init__(self):
+        #print(logfile)
         pass
 
     def critical(self,message):
@@ -90,10 +101,11 @@ class logme:
         self.writelog(plevel, message)
 
     def writelog(self,plevel,message):
-        src_filename = os.path.basename(sys.argv[0])
+        #filename = os.path.basename(sys.argv[0])
         # We need to log the source filename. Easiest way is to prepend it to the message
-        message = src_filename + ':' + message
-        #print(message)
+        # 06/06/2017. We can prepend source filename as we cannot have a string and dict/list object added
+        # message = src_filename + ':' + message
+        #print(filename)
         logging.basicConfig(filename=logfile, level=logging.DEBUG,
                      #format='%(asctime)s:%(levelname)-8s:%(process)d:%(filename)s:%(message)s',
                      format='%(asctime)s:%(levelname)-8s:%(process)d:%(message)s',
@@ -101,11 +113,13 @@ class logme:
                      )
         logging.log(plevel, message)
 
-# Tests
-#mylog = logme()
-#critlog = mylog.critical('This is a critical test')
-#mylog.critical('This is a critical test')
-#errlog = mylog.error('This is an error test')
+        if (plevel == 10):
+            print("{}".format(message))
+
+        if (plevel == 50):
+            print("{}".format(message))
+            print("CRITICAL Level : Mandatory Exit...")
+            exit(1)
 
 # End class logme
 #################

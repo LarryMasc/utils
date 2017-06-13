@@ -55,6 +55,30 @@
 
     *Note local and full path are extremely important*
 
+## mysql_config_editor
+ * Not available on Mariadb. Use it to encrypt passwords
+
+## .my.conf entries to support multiple DBs
+ * The client section is common to all DBs
+ [client]
+ port=3306
+ prompt='(\d)'
+ * For specific MySQL DB entries
+ 
+ **[mysqldb1]**  
+  user=(user1)  
+  password=(password)  
+  database=(db1)  
+  host=(host1)
+ 
+ **[mysqldb2]**  
+ user=(user2)  
+ password=(password2)  
+ database=(db2)  
+ host=(host1)  
+ 
+ * To connect to db1  
+    _mysql --defaults-group-suffix=db1_
 
 ## DML
  * select count(*) from tablename;
